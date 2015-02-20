@@ -1,0 +1,56 @@
+@font-face {
+ font-family: "SourceCodePro";
+ src: url('SourceCodePro-Medium.otf');
+}
+
+code {color:#000;font-family:"SourceCodePro", monospace}
+div .leftSide {float:left; width: 46%;}
+div .rightSide {float:right; width: 46%;}
+h2 {text-align:center;}
+.tree {font-size:70%;}
+.note {border: 1px solid #AAA; padding:1em;position:relative;background:aliceblue;
+      font-size:70%; width:80%}
+.note:after {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  bottom: 15px;
+  width: 50%;
+  height: 20%;
+  max-width: 300px;
+  right: 10px;
+  -webkit-transform: rotate(3deg);
+  -ms-transform: rotate(3deg);
+  transform: rotate(3deg);
+  border-radius: 3px;
+  box-shadow: 0 15px 10px rgba(0, 0, 0, 0.7);
+}
+
+.note:before {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  bottom: 15px;
+  width: 50%;
+  height: 20%;
+  max-width: 300px;
+  left: 10px;
+  -webkit-transform: rotate(-3deg);
+  -ms-transform: rotate(-3deg);
+  transform: rotate(-3deg);
+  box-shadow: 0 15px 10px rgba(0, 0, 0, 0.7);
+}
+.example {background:wheat;}
+
+.box {background:ghostwhite; border:1px solid #AAA;
+      display:inline-block; padding:1em;text-align:center;
+      margin-bottom: 1em;
+      box-shadow: 0 3px 3px rgba(0,0,0,0.5)}
+
+.socr {position:absolute; right:1em;bottom:2.0em;display:inline-block;max-width:20%}
+
+.small{font-size:50%}
+
+.mcq li {min-width:80%}
+.mcq input:checked  + * 
+    {background-color: darkkhaki}
