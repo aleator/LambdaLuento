@@ -13,5 +13,3 @@ lucidify t = ul_ [class_ "tree"] (recur t)
   recur (Node a ns) = (li_ . label_) (cb <> span_ (a) <> ul_ (foldMap recur ns))
   cb = input_ [type_ "checkbox"]
 
-           ,Node "third" [Node "a" [],Node "b" []]
-            ]
