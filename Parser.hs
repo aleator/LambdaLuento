@@ -19,6 +19,7 @@ import Data.Maybe
 import qualified Data.Set as S
 import Data.Set ( (\\) )
 import qualified Data.Map as M
+import qualified Lucid as L
 
 data LC a = V a | L a (LC a) | A (LC a) (LC a) deriving (Functor, Show, Eq)
 type Expr = LC String
@@ -49,7 +50,7 @@ a <:> b = a PP.<> PP.comma PP.<+> b
 reason a = PP.text "Joka on muotoa" PP.<+> a PP.<+> "missä"
 toTree (V a)   = Node (PP.text a <:> "eli muuttuja") []
 toTree x@(L a e) = Node (ppLC x)
-                    [Node (reason " {○ => ●}") []
+                    [Node (reason (" {○ => ●}")) []
                     ,addDescription (" ○ on ") (toTree (V a)) 
                     ,addDescription (" ● on ") (toTree e)]
 toTree x@(A a e) = Node (ppLC x )

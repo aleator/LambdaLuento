@@ -79,7 +79,7 @@ slide =  reveal "Pienin ohjelmointikieli" $ do
              ,"esim." 
              ,reduction ["x + 1","41 + 1","42"]<>" jos x on 41"
             ]
-
+  sect "Statiikka" $ do
     subsec "Pikkukielen Syntaksi" $ do
             h3_ "Pikkukielen ohjelma"
             bullets ["Ohjelma on yksi lause"
@@ -110,16 +110,16 @@ slide =  reveal "Pienin ohjelmointikieli" $ do
                 syntaxTree "{x=>{y=>x(y)}}"
             onRight (note lauseenMaar)
 
-    subsec "Kysymys" $ do
-        h3_ "Mitkä seuraavista ovat lauseita?"
-        onLeft $ poll "onkolause" [
+    peer "onkolause" $ \poll -> subsec "Kysymys" $ do
+        "Mitkä seuraavista ovat lauseita?"
+        hr_ []
+        small $ poll [
              code_ "x"
             ,lam "{x=>y}({x=>y})"
             ,code_ "x y"
             ,code_ "{x(y) => x}"
             ,lam "{x => x(y)}"
             ]
-        onRight $ socrativeInfo
 
     subsec "Vastaus" $ do
         h3_ "Vastaus"
@@ -132,7 +132,7 @@ slide =  reveal "Pienin ohjelmointikieli" $ do
                 ,"Myöhemmin voitaisiin lisätä vaikkapa "<:>"Int"<->"tai "<:>"String"
                 ,"(Sukua pythonille, schemelle, rubylle jne..)"]
 
-    secHead "Dynamiikka"
+  sect "Kohti dynamiikkaa: Muuttujat" $ do
 
     subsec "Muuttuja I/II" $ do
       onLeft $ do  
@@ -151,10 +151,11 @@ slide =  reveal "Pienin ohjelmointikieli" $ do
                       ,lam $  (V "◊" --> (V "○" --> (V "f" `A` V "○")))
                       ]]
 
-    subsec "Kysymys" $ do
-        h3_ "Kuinka monta eri muuttujaa on lausekkeessa"
+    peer "montakomuuttujaa" $ \poll -> subsec "Kysymys" $ do
+        "Kuinka monta eri muuttujaa on lausekkeessa"
         box $ lam "{x => x({x=>x(x)})}"
-        onLeft $ poll "montakomuuttujaa" . reverse . map span_ $ ["Viisi","Neljä","Kolme","Kaksi","Yksi","Ei yhtään"]
+        hr_ []
+        small $ poll . reverse . map span_ $ ["Viisi","Neljä","Kolme","Kaksi","Yksi","Ei yhtään"]
 
     subsec "Vastaus" $ do
         h3_ "Vastaus"
@@ -168,76 +169,72 @@ slide =  reveal "Pienin ohjelmointikieli" $ do
                 ,code_ "x"<->"on on sidottu lauseessa "<>lam "{x => x({y => y})}"
                 ]
 
-    subsec "Kysymys" $ do
-       h3_ "Mitkä muuttujat ovat vapaita lauseessa"
+    peer "vapaatmuuttujat" $ \poll -> subsec "Kysymys" $ do
+       "Mitkä muuttujat ovat vapaita lauseessa"
        box "{x¹ => y²(x¹)}({z³=>z³(x⁴)})"
-       onLeft $ do 
-        span_ "Lauseessa vapaita muuttujia ovat"
-        poll "vapaatmuuttujat" $ map span_ 
+       "?"
+       hr_ []
+       do 
+        small $ poll $ map span_ 
             ["x¹","y²","z³","x⁴"]
-       onRight $ socrativeInfo
 
     subsec "Vastaus" $ do
         h3_ "Vastaus"
         bullets $ ["y² ja x⁴"]
 
-    subsec "Dynamiikka" $ do
-      h3_ "Miten pienin ohjelmointikieli suoritetaan?"
+  sect "Dynamiikka" $ do
+    subsec  "Miten pienin ohjelmointikieli suoritetaan?" $ do
       numbers ["Etsi osalause joka näyttää tältä:"<:> " {○ => ■}(●)"
               ,"Kirjoita sen paikalle lause '■' missä muuttuja '○' on korvattu"<->
                "lauseella '●'"
               ,"Toista niin kauan kuin voit"]
-      h3_ "Korvaus?"
+    subsec  "Korvaus?" $ do
       bullets [strong_ "Vapaan"<->"muuttujan paikalle kirjoitetaan toinen lauseke"
-              ,"esim. Korvataan "<->lam x<->"lauseella "<:>lam (y --> y)<->"lauseessa "<>
-               lam "x({x => x})(x)"
+              ,"esim. Korvataan "<> list [lam x,"lauseella "<:>lam (y --> y), "lauseessa "<>
+                   lam "x({x => x})(x)"]
               ,"tulos on: "<> slam (replace "x({x => x})(x)" "x" "{y=>y}")
                ]
 
     subsec "Esimerkki" $ do
         h3_ "Laskenta käy esimerkiksi näin:"
         reductionNote
-        div_ $ reduce mempty "{x=>f(x)}(y)"
+        exDiv $ reduce mempty "{x=>f(x)}(y)"
         br_ []
-        h3_ "Tai näin"
-        div_ $ reduce mempty "{f=>{y=>f(y)}(a)}(g)" 
+    subsec  "Tai näin" $ do
+        div_ [class_ "example"] $ reduce mempty "{f=>{y=>f(y)}(a)}(g)" 
 
     subsec "Esimerkki" $ do
       h3_ "Monimutkaisempi esimerkki"
-      div_ $ reduce mempty "{x=>{y=>y(x)}(x)}(u => u)"
+      exDiv $ reduce mempty "{x=>{y=>y(x)}(x)}(u => u)"
       reductionNote
 
-    subsec "Kysymys" $ do
-        h3_ $ "Mitkä seuraavista lausekkeista tuottavat saman tuloksen kuin lause "
-              <:> lam "{x => {x => f(x)(x)}}(z)"<>"?"
-        poll "samatulos"
-                [lam "z"
-                ,lam "f(z)(z)"
-                ,lam "{z => {x => f(x)(x)}}"
+    peer "samatulos" $ \ poll -> subsec "Kysymys" $ do
+        "Mitkä seuraavista lausekkeista tuottavat saman tuloksen kuin lause "
+        code_ (lam "{x => {x => f(x)(x)}}(z)")<>"?"
+        hr_ []
+        smaller $ poll 
+                [
+                 lam "{z => {x => f(x)(x)}}"
                 ,lam "{z => {z => f(z)(z)}}"
                 ,lam "{x => f(z)(x)}"
                 ,lam "{x => f(x)(x)}"
                 ,lam "{i => {j => f(j)(j)}}(z)"
                 ,lam "{i => {j => f(i)(i)}}(z)"
                 ]
-        onRight socrativeInfo
-
-    subsec "Vastaus" $ do
-        h3_ "Vastaus"
-        bullets  ["3, 4, 6, ja 7"]
 
     subsec "Kysymys" $ do
-       socrativeInfo
-       h3_ ("Ongelma:")
+       "Ongelma:"
        bullets [ slam "{f => {y => f(y)}}(y)" 
                  <-> "laskettaisiin " <-> slam "{y=>y(y)}"
                 , "Tuloksessa on peräkkäin kaksi"
-                  <->strong_ "eri"<->"muuttujaa nimellä y"
-                , "Vrt."<->slam "{f => {◊ => f(◊)}}(○)" 
-                  <-> "laskettaisiin " <-> slam "{◊=>○(◊)}"
+                  <->strong_ "eri"<->"muuttujaa nimellä "<:>"y"
+                , "Vrt."<->slam "{f => {◊ => f(◊)}}(○)"<>", joka"
+                  <> br_ []<-> "laskettaisiin " <> br_ [] <-> slam "{◊=>○(◊)}"
                ]
-       h3_ "Mitä vastauksen pitäisi olla?"
-       poll "aliasoituminen" . map lam $
+    peer "aliasoituminen" $ \poll -> subsec "vastaa" $ do
+       "Edellisen kalvon kysymys"
+       hr_ []
+       small $ poll . map lam $
             ["{y => y(y)}"
             ,"{y => a(y)}"
             ,"{a => y(a)}"
@@ -250,13 +247,13 @@ slide =  reveal "Pienin ohjelmointikieli" $ do
 
     subsec "Esimerkki" $ do
       h3_ "Kolmas esimerkki"
-      div_ $ reduce mempty "{f => {y => f(y)}}(y)" 
+      exDiv $ reduce mempty "{f => {y => f(y)}}(y)" 
       br_ [] 
       h3_ "Merkintätapa"
-      bullets ["Laitetaan pilkku muuttujan perään erottamaan eri muuttujat"]
+      bullets ["Laitetaan muuttujan perään hipsu erottamaan eri muuttujat"]
 
 
-    secHead "Koodaus"
+  sect "Koodaus" $ do
 
     subsec "Onko tässä kaikki?" $ do
         h3_ "On!"
@@ -304,13 +301,14 @@ slide =  reveal "Pienin ohjelmointikieli" $ do
         bullets ["kaksi = " <>(lam $ f' --> (x --> rf(rf(rx))))
                 ,"yksi = "  <>(lam $ f' --> (x --> gf(gx)))
                 ,"kaksi + yksi = "<>(lam $ f' --> (x --> rf(rf(gf(gx)))))]
+        hr_ []
         h3_ "Joten + on"
-        bullets [lam "{n => {m => {f => {x => n(f)(m(f)(x))}}}}"]
+        lam "{n => {m => {f => {x => n(f)(m(f)(x))}}}}"
                      
     subsec "Yhteenlaskun ajatus" $ do
-        h3_ "Näyttää monimutkaiselle, on yksinkertaista:"
+        "Näyttää monimutkaiselle, on yksinkertaista:"
         br_ []
-        div_ $ reduce mempty "{n => {m => {f => {x => n(f)(m(f)(x))}}}}(yksi)(kaksi)" 
+        exDiv $ small $ reduce mempty "{n => {m => {f => {x => n(f)(m(f)(x))}}}}(yksi)(kaksi)" 
         br_ []
         bullets ["Yllä "<:>"kaksi(f)(x) on "<>lam "f(f(x))"<->"ja"
                 ,code_ "yksi(f)"<->"on"<->lam "{x=>f(x)}"
@@ -320,13 +318,15 @@ slide =  reveal "Pienin ohjelmointikieli" $ do
     secHead "Älä säikähdä, mutta"
 
     subsec "Esimerkki" $ do
-        div_ $ reduce cnumbers "summa(kaksi)(yksi)"
+        exDiv $ smaller $ smaller $  reduce cnumbers "summa(kaksi)(yksi)"
 
     subsec "Merkintää" $ do
         h3_ "Koska numerot osataan, jatkossa, "
         bullets [code_ (toHtml nimi) <->"tarkoittaa lausetta:" 
                   <-> div_ (lam (fmap toHtml def))
                 | (nimi,def) <- M.toList cnumbers]
+
+  sect "Muita rakenteita" $ do
 
     subsec "Listat?" $ do
         h3_ "Keksitään miten lista lukuja esitetään lauseena:"
@@ -340,7 +340,7 @@ slide =  reveal "Pienin ohjelmointikieli" $ do
         h3_ "Summataan lista [yksi,kaksi,kolme]:"
         div_ (code_ "[yksi,kaksi,kolme](summa)(nolla)")
         div_ (code_ "⇒")
-        div_ (reduce mempty 
+        exDiv $ smaller$ (reduce mempty 
                      "{c=>{n=>c(yksi)(c(kaksi)(c(kolme)(n)))}}(summa)(nolla)")
         br_ []
         div_ (code_ "eli,  1+(2+(3+(0))")
@@ -349,11 +349,11 @@ slide =  reveal "Pienin ohjelmointikieli" $ do
 
     subsec "Miksi abstrahointi on erittäin tärkeää?" $ do
         h3_ "Summataan lista [yksi,kaksi,kolme]:"
-        div_ [style_ "font-size:small; columns: 10ex 4; -webkit-columns: 10ex 4;"]
+        div_ [style_ "font-size:small; columns: 10ex 4; -moz-columns: 10ex 4;-webkit-columns: 10ex 4;"]
             (reduce cnumbers 
                      "{c=>{n=>c(yksi)(c(kaksi)(c(kolme)(n)))}}(summa)(nolla)")
 
-    secHead "Yhteenveto"
+  sect "Yhteenveto" $ do
 
     subsec "Yhteenveto I/III" $ do
         h3_ "Mitä?"
@@ -387,8 +387,8 @@ cnumbers = M.fromList [
                      , ("summa", "{n => {m => {f => {x => n(f)(m(f)(x))}}}}")]
 
         
-socrativeInfo :: Monad m => HtmlT m () 
-socrativeInfo = div_ [class_ "note socr"] $ h4_ "Vastaa valintalaatikoilla:" <>
+socrativeInfo :: Monad m =>  HtmlT m () 
+socrativeInfo =  div_ [class_ "note socr"] $ h4_ "Vastaa valintalaatikoilla:" <>
                        numbers ["Mieti & Vastaa","Vakuuta ryhmäsi","Vastaa uudelleen","Tarkasta vastaus"]
 
 reductionNote :: Monad m=> HtmlT m ()
@@ -402,9 +402,12 @@ lauseenMaar = do
                 (h3_ "Lause voi olla")
                 bullets [ 
                           strong_ "Muuttuja "<>", eli "<:>"x,y,z,u,w"<>".. jne." 
-                        , strong_ "Abstraktio "<>", eli"<:>"{○ => ●}"<>", missä ○ on muuttuja ja ● on lause" 
-                        , strong_ "Applikaatio "<>", eli"<:>"■(●)"<>", missä ■ ja ● ovat lauseita"
+                        , strong_ "Abstraktio "<>", eli "<:>"{○ => ●}"<>", missä ○ on muuttuja ja ● on lause" 
+                        , strong_ "Applikaatio "<>", eli "<:>"■(●)"<>", missä ■ ja ● ovat lauseita"
                         ]
+
+exDiv :: Monad m => HtmlT m () -> HtmlT m ()
+exDiv = div_ [class_ "example"] 
 
 -- Nopsempi lambda
 rx,gx, x,y,z,k,i,j :: Monad m => LC (HtmlT m ())
